@@ -1,4 +1,4 @@
-#📍 FortiFi Visitor Logger & Redirect System
+# 📍 FortiFi Visitor Logger & Redirect System
 
 A lightweight PHP-based visitor logging system that captures **IP address**, **approximate or precise location (latitude & longitude)**, and **basic device info**, then **redirects users** to a target website seamlessly.
 
