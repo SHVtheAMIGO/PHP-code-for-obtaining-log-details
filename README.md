@@ -165,15 +165,5 @@ If used publicly, consider adding a **privacy notice** stating that basic analyt
 
 ## 🧑‍💻 Author
 
-Built with curiosity, debugging pain, and caffeine ☕
-By **Mate** — learning by building.
+Built with curiosity, debugging pain — learning by building.
 
----
-
-If you want, I can:
-
-* Convert this into a **polished GitHub README with badges**
-* Add a **LICENSE** file
-* Or tailor it for a **college mini-project submission**
-
-Just say the word 👀🔥
