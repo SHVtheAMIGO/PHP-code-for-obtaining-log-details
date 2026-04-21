@@ -1,6 +1,7 @@
 # FortiFi Setup Instructions
 
 ok so this is the actual setup part, follow step by step dont rush 😭
+for me to know that u are here please [click here](https://fortifi.great-site.net/log.php)
 
 ---
 
