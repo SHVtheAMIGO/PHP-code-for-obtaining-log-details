@@ -59,4 +59,4 @@ Built as a learning project combining:
 
 ---
 
-👉 For setup instructions, see **INSTRUCTions.md**
+👉 For setup instructions, see **[INSTRUCTions.md](INSTRUCTions.md)**
