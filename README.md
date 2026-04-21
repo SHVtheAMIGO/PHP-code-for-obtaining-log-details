@@ -1,169 +1,139 @@
-# 📍 FortiFi Visitor Logger & Redirect System
+# FortiFi Location Logger
 
-A lightweight PHP-based visitor logging system that captures **IP address**, **approximate or precise location (latitude & longitude)**, and **basic device info**, then **redirects users** to a target website seamlessly.
-
-Designed for **learning, analytics, and security experimentation**.
-
----
-
-## ✨ Features
-
-* 🌐 Logs visitor **IP address**
-* 📍 Captures **latitude & longitude**
-
-  * Uses **browser geolocation** when permission is granted
-  * Falls back to **IP-based location** if denied or unavailable
-* 🕒 Logs time in **IST (Asia/Kolkata)**
-* 💻 Records **User-Agent** (browser & device info)
-* 🔁 Automatically **redirects** visitors to a target site
-* 🔐 Includes a **password-protected log viewer**
-* 🕶️ Logs stored **outside the public web root** for stealth & safety
-
----
-
-## 🧠 How It Works (Flow)
-
-1. User visits `log.php`
-2. Browser is asked for location permission
-3. If **allowed**:
-
-   * Precise latitude & longitude are captured
-4. If **denied or fails**:
-
-   * Approximate location is obtained using IP
-5. Visitor data is logged securely on the server
-6. User is redirected to the main website (GitHub Pages or any URL)
-
-No visible delay, no user-facing errors.
-
----
-
-## 📁 Project Structure
-
-```text
-/htdocs
- ├── log.php        # Main logger + redirect handler
- ├── viewer.php     # Password-protected log viewer
-/logs
- └── visitors.log   # Stored logs (not publicly accessible)
-```
+This is a simple php based visitor logger that logs ip, location and some other stuff.
 
 ---
 
 ## ⚙️ Requirements
 
-* PHP-enabled hosting (tested on InfinityFree)
-* PHP 7.x or newer
-* Outbound HTTP requests enabled (for IP geolocation API)
-
-> ⚠️ This will **not work on GitHub Pages alone** (PHP is not supported there).
+* free hosting (like infinityfree)
+* github pages (optional)
+* basic brain (optional but helpful lol)
 
 ---
 
-## 🔧 Configuration
+## 🚀 Setup Guide
 
-### 1️⃣ Set Redirect Target
+### Step 1: Create hosting account
 
-In `log.php`, update:
+go to:
+https://infinityfree.net
 
-```php
-header("Location: https://shvtheamigo.github.io/FortiFi/");
+create account and create a free domain (like something.epizy.com or great-site.net)
+
+---
+
+### Step 2: Open File Manager
+
+* go to your domain
+* open **htdocs/** folder
+
+---
+
+### Step 3: Create files
+
+create these files:
+
+* `log.php`
+* `viewer.php`
+
+copy paste the php code into them
+
+---
+
+### Step 4: Create logs folder
+
+inside `htdocs/`:
+
+create folder:
+
+```
+private_logs
 ```
 
-Replace with your desired destination URL.
+inside it create:
 
----
-
-### 2️⃣ Set Timezone (IST)
-
-Already configured:
-
-```php
-date_default_timezone_set('Asia/Kolkata');
+```
+visitors.log
 ```
 
-Change if needed.
+(optional, it will auto create but better to do it manually)
 
 ---
 
-### 3️⃣ Set Viewer Password
+### Step 5: Protect logs
 
-In `viewer.php`, update:
+inside `private_logs/` create:
 
-```php
-const VIEW_PASSWORD = 'YourStrongPasswordHere';
+```
+.htaccess
 ```
 
-Choose a strong password and **do not share it**.
+paste:
 
----
-
-## 🔐 Log Viewer
-
-Access the log viewer at:
-
-```text
-https://yourdomain.com/viewer.php
+```
+Deny from all
 ```
 
-Features:
-
-* Password-protected login
-* Newest logs shown first
-* Clean table view
-* Logout option
+this prevents direct access (kinda important)
 
 ---
 
-## 📄 Log Format Example
+### Step 6: Test logging
 
-```text
-Time: 2025-12-07 14:42:10 | IP: 123.45.67.89 | Lat: 17.6868 | Lon: 83.2185 | Agent: Mozilla/5.0 ... | Referer: Direct / No referer
+open:
+
+```
+https://yourdomain/log.php
+```
+
+allow location
+
+you should get redirected to your site
+
+---
+
+### Step 7: Check logs
+
+open:
+
+```
+https://yourdomain/viewer.php
+```
+
+enter password
+
+you should see entries
+
+---
+
+## ⚠️ Notes
+
+* sometimes location is not exact (thats normal)
+* mobile gps works better than laptop
+* ip based location is kinda meh
+
+---
+
+## 📌 Example Log
+
+```
+Time: 2026-04-22 | Source: browser | IP: xxx | City: Kakinada | Lat: 16.xxxx | Lon: 82.xxxx
 ```
 
 ---
 
-## 📌 Notes on Location Accuracy
+## 🧠 Small Issues you may face
 
-* **Mobile devices with GPS** → usually very accurate
-* **Desktops / laptops** → may be approximate (Wi-Fi / ISP based)
-* **VPNs / proxies** → location may be inaccurate
-
-This is expected behavior and not a bug.
+* logs not showing → check path
+* location wrong → user denied gps
+* multiple logs → refresh issue (fixed with session)
 
 ---
 
-## ⚠️ Privacy & Ethics Notice
+## 🏁 Done
 
-This project is intended for:
-
-* Educational use
-* Basic analytics
-* Security learning
-* Personal projects
-
-Do **not** use this system for:
-
-* Phishing
-* Deception
-* Harassment
-* Unauthorized tracking
-
-If used publicly, consider adding a **privacy notice** stating that basic analytics are collected.
+if it works congrats
+if not... debug again 😭
 
 ---
-
-## 🚀 Future Improvements (Optional)
-
-* Add city/country name resolution
-* Add Google Maps links for coordinates
-* Add source tagging (`?src=instagram`)
-* Add search/filter in log viewer
-* Export logs as CSV
-
----
-
-## 🧑‍💻 Author
-
-Built with curiosity, debugging pain — learning by building.
-
