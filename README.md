@@ -1,4 +1,4 @@
-# FortiFi Location Logger
+# [FortiFi](https://github.com/SHVtheAMIGO/FortiFi) Location Logger
 
 A lightweight PHP-based visitor logging system that captures IP, approximate or browser-provided location, and device information.
 
