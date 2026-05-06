@@ -1,4 +1,7 @@
+
 <?php
+include 'db.php';
+
 session_start();
 date_default_timezone_set('Asia/Kolkata');
 
@@ -74,6 +77,8 @@ if (($userLat !== null || isset($_GET['fallback'])) && !isset($_SESSION['logged'
     header("Location: https://shvtheamigo.github.io/FortiFi/");
     exit;
 }
+
+include 'detect.php';
 ?>
 
 <!DOCTYPE html>
