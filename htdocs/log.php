@@ -126,3 +126,21 @@ include 'detect.php';
 
 </body>
 </html>
+
+<?php
+
+include 'db.php';
+
+$ip = $_SERVER['REMOTE_ADDR'];
+
+$stmt = $db->prepare("INSERT INTO logs (ip, timestamp) VALUES (?, ?)");
+
+$stmt->bindValue(1, $ip);
+$stmt->bindValue(2, time());
+
+if($stmt->execute()) {
+    echo "To redirecting you to the Github project, please allow location access..^_^";
+} else {
+    echo "Failed";
+}
+?>
